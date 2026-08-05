@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Habit Tracker</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>🎯 Habit Tracker</h1>
+
+      <!-- Formulário pra criar hábito novo -->
+      <form id="form-novo-habito">
+        <input
+          type="text"
+          id="input-nome-habito"
+          placeholder="Ex: Beber 2L de água"
+          required
+        />
+        <button type="submit">Adicionar</button>
+      </form>
+
+      <!-- Aqui a lista de hábitos vai ser inserida via JavaScript -->
+      <ul id="lista-habitos"></ul>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

@@ -1,5 +1,4 @@
 // Módulo nativo do Node.js para trabalhar com arquivos
-// (equivalente ao java.io / java.nio que você já usou no Task CLI)
 const fs = require("fs");
 
 // Caminho do arquivo onde os hábitos ficam salvos
@@ -20,25 +19,24 @@ function salvarHabitos(habitos) {
 // Retorna a data de hoje no formato "AAAA-MM-DD" (mesmo formato salvo no array)
 function dataDeHoje() {
   return new Date().toISOString().split("T")[0];
-  // toISOString() gera algo tipo "2026-08-04T15:30:00.000Z"
-  // o split('T')[0] pega só a parte "2026-08-04"
 }
 
-// Calcula quantos dias seguidos (streak) o hábito foi concluído,
-// contando a partir de hoje pra trás
+/**
+ * Calcula quantos dias seguidos um hábito foi concluído,
+ * contando a partir de hoje para trás.
+ */
 function calcularStreak(diasConcluidos) {
   let streak = 0;
   let dataAtual = new Date();
 
-  // Vai voltando dia a dia enquanto encontrar a data no array
   while (true) {
     const dataFormatada = dataAtual.toISOString().split("T")[0];
 
     if (diasConcluidos.includes(dataFormatada)) {
       streak++;
-      dataAtual.setDate(dataAtual.getDate() - 1); // volta um dia
+      dataAtual.setDate(dataAtual.getDate() - 1);
     } else {
-      break; // quebrou a sequência, para de contar
+      break;
     }
   }
 
@@ -55,10 +53,8 @@ router.get("/", (req, res) => {
   const habitos = lerHabitos();
   const hoje = dataDeHoje();
 
-  // .map() percorre o array e devolve um NOVO array transformado
-  // (parecido com .stream().map() do Java)
   const habitosComStatus = habitos.map((habito) => ({
-    ...habito, // spread: copia todos os campos do hábito original
+    ...habito,
     concluidoHoje: habito.diasConcluidos.includes(hoje),
     streakAtual: calcularStreak(habito.diasConcluidos),
   }));
@@ -68,7 +64,7 @@ router.get("/", (req, res) => {
 
 // POST /habitos → cria um hábito novo
 router.post("/", (req, res) => {
-  const { nome } = req.body; // desestrutura o corpo da requisição
+  const { nome } = req.body;
 
   if (!nome) {
     return res.status(400).json({ erro: 'O campo "nome" é obrigatório' });
@@ -77,7 +73,7 @@ router.post("/", (req, res) => {
   const habitos = lerHabitos();
 
   const novoHabito = {
-    id: Date.now(), // usa o timestamp atual como ID único (simples e sem colisão)
+    id: Date.now(),
     nome,
     diasConcluidos: [],
   };
@@ -90,11 +86,10 @@ router.post("/", (req, res) => {
 
 // PUT /habitos/:id/concluir → marca o hábito como concluído hoje
 router.put("/:id/concluir", (req, res) => {
-  const { id } = req.params; // pega o :id da URL
+  const { id } = req.params;
   const habitos = lerHabitos();
   const hoje = dataDeHoje();
 
-  // .find() procura o primeiro elemento que bate com a condição
   const habito = habitos.find((h) => h.id === Number(id));
 
   if (!habito) {
@@ -114,7 +109,6 @@ router.delete("/:id", (req, res) => {
   const { id } = req.params;
   const habitos = lerHabitos();
 
-  // .filter() devolve um novo array SEM o item que bate com a condição
   const habitosFiltrados = habitos.filter((h) => h.id !== Number(id));
 
   if (habitosFiltrados.length === habitos.length) {
@@ -122,7 +116,7 @@ router.delete("/:id", (req, res) => {
   }
 
   salvarHabitos(habitosFiltrados);
-  res.status(204).send(); // 204 = "No Content" (sucesso sem corpo de resposta)
+  res.status(204).send();
 });
 
 // Exporta o router pra ser usado no server.js

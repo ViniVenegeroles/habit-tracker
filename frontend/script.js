@@ -1,22 +1,18 @@
-// URL base da nossa API
-const API_URL = "http://localhost:3000/habitos";
+const API_URL = "https://habit-tracker-api-f3w0.onrender.com/habitos";
 
-// Pega as referências dos elementos HTML que vamos manipular
 const form = document.getElementById("form-novo-habito");
 const input = document.getElementById("input-nome-habito");
 const listaHabitos = document.getElementById("lista-habitos");
 
 // Busca todos os hábitos na API e renderiza na tela
 async function carregarHabitos() {
-  const resposta = await fetch(API_URL); // GET por padrão
+  const resposta = await fetch(API_URL);
   const habitos = await resposta.json(); // converte a resposta em objeto/array JS
 
   renderizarHabitos(habitos);
 }
 
-// Recebe o array de hábitos e monta o HTML de cada um dentro da <ul>
 function renderizarHabitos(habitos) {
-  // Limpa a lista antes de redesenhar (evita duplicar itens)
   listaHabitos.innerHTML = "";
 
   // Se não tiver nenhum hábito, mostra uma mensagem amigável
@@ -31,8 +27,6 @@ function renderizarHabitos(habitos) {
     const li = document.createElement("li");
     li.className = "habito";
 
-    // Template string (crase ``) permite interpolar variáveis com ${}
-    // Isso é bem mais legível que concatenação de string com "+"
     li.innerHTML = `
       <div class="habito-info">
         <span class="habito-nome">${habito.nome}</span>
@@ -53,31 +47,30 @@ function renderizarHabitos(habitos) {
   });
 }
 
-// Captura o envio do formulário (criar hábito novo)
 form.addEventListener("submit", async (evento) => {
-  evento.preventDefault(); // impede o recarregamento padrão da página no submit
+  evento.preventDefault();
 
-  const nome = input.value.trim(); // remove espaços em branco nas pontas
+  const nome = input.value.trim();
 
-  if (!nome) return; // proteção extra, embora o "required" do HTML já ajude
+  if (!nome) return;
 
   // Faz a requisição POST pra API
   await fetch(API_URL, {
     method: "POST",
-    headers: { "Content-Type": "application/json" }, // avisa que o corpo é JSON
-    body: JSON.stringify({ nome }), // converte o objeto JS em texto JSON
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ nome }),
   });
 
-  input.value = ""; // limpa o campo de texto
-  carregarHabitos(); // recarrega a lista pra mostrar o hábito novo
+  input.value = "";
+  carregarHabitos();
 });
 
 // Captura cliques na lista de hábitos (delegação de evento)
 // Em vez de um listener por botão, um listener só na <ul> que "escuta" tudo dentro dela
 listaHabitos.addEventListener("click", async (evento) => {
-  const id = evento.target.dataset.id; // pega o data-id do elemento clicado
+  const id = evento.target.dataset.id;
 
-  if (!id) return; // clicou em algo sem data-id, ignora
+  if (!id) return;
 
   // Verifica se clicou no botão de concluir
   if (evento.target.classList.contains("btn-concluir")) {

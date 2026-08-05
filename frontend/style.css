@@ -33,7 +33,7 @@ h1 {
 }
 
 #input-nome-habito {
-  flex: 1; /* ocupa todo espaço disponível, empurrando o botão pra direita */
+  flex: 1;
   padding: 10px 14px;
   border: 1px solid #d4d4d8;
   border-radius: 8px;

@@ -17,7 +17,7 @@ app.use(express.json());
 app.use("/habitos", habitosRouter);
 
 // Define a porta onde o servidor vai "escutar" as requisições
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // Rota de teste: quando alguém acessar GET http://localhost:3000/
 // essa função é executada e devolve uma resposta

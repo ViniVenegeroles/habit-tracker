@@ -4,7 +4,14 @@ const habitosRouter = require("./routes/habitos");
 
 const app = express();
 
-app.use(cors());
+const corsOptions = {
+  origin: [
+    "https://vinivenegeroles.github.io", // produção
+    "http://127.0.0.1:5500", // desenvolvimento local (Live Server)
+  ],
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.json());
 

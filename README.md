@@ -20,8 +20,8 @@ O Habit Tracker permite criar hábitos, marcá-los como concluídos no dia e aco
 
 - Node.js
 - Express
+- PostgreSQL ([Neon](https://neon.tech))
 - CORS (restrito às origens de produção e desenvolvimento)
-- Persistência em arquivo JSON
 
 **Front-end**
 
@@ -33,6 +33,7 @@ O Habit Tracker permite criar hábitos, marcá-los como concluídos no dia e aco
 
 - Back-end: [Render](https://render.com)
 - Front-end: [GitHub Pages](https://pages.github.com)
+- Banco de dados: [Neon](https://neon.tech) (PostgreSQL serverless)
 
 ## ✨ Funcionalidades
 
@@ -47,10 +48,9 @@ O Habit Tracker permite criar hábitos, marcá-los como concluídos no dia e aco
 ```
 habit-tracker/
 ├── backend/
-│   ├── data/
-│   │   └── habitos.json      # "Banco de dados" em arquivo
 │   ├── routes/
 │   │   └── habitos.js        # Rotas da API (CRUD + lógica de streak)
+│   ├── db.js                 # Conexão com o banco PostgreSQL
 │   ├── server.js             # Ponto de entrada do servidor Express
 │   └── package.json
 └── docs/                     # Front-end (nome exigido pelo GitHub Pages)
@@ -68,17 +68,41 @@ habit-tracker/
 | PUT    | `/habitos/:id/concluir` | Marca o hábito como concluído hoje          |
 | DELETE | `/habitos/:id`          | Remove um hábito                            |
 
+## 🗄️ Modelo de dados
+
+```sql
+CREATE TABLE habitos (
+  id SERIAL PRIMARY KEY,
+  nome TEXT NOT NULL,
+  dias_concluidos DATE[] DEFAULT '{}'
+);
+```
+
 ## 💻 Como rodar localmente
 
 ### Pré-requisitos
 
 - [Node.js](https://nodejs.org) instalado (versão LTS recomendada)
+- Uma instância PostgreSQL (recomendo criar uma gratuita em [neon.tech](https://neon.tech))
 
 ### Back-end
 
 ```bash
 cd backend
 npm install
+```
+
+Cria um arquivo `.env` dentro da pasta `backend` com a connection string do seu banco:
+
+```
+DATABASE_URL=postgresql://usuario:senha@seu-host.neon.tech/neondb?sslmode=require
+```
+
+Cria a tabela executando o SQL da seção [Modelo de dados](#️-modelo-de-dados) no editor SQL do seu banco.
+
+Depois, inicia o servidor:
+
+```bash
 node server.js
 ```
 
@@ -89,15 +113,6 @@ O servidor sobe em `http://localhost:3000`.
 Abra o arquivo `docs/index.html` diretamente no navegador, ou sirva com uma extensão como o Live Server do VS Code.
 
 > Por padrão, o front aponta para a API em produção. Para testar contra o back-end local, altere a constante `API_URL` no `docs/script.js` para `http://localhost:3000/habitos`.
-
-## 🧠 Aprendizados
-
-Este foi meu primeiro projeto fullstack em JavaScript, vindo de uma base em Java. Alguns pontos que aprofundei durante o desenvolvimento:
-
-- Diferença entre CORS em desenvolvimento e produção, e como restringi-lo por origem
-- Cálculo de dados derivados (streak) em tempo real em vez de persisti-los, evitando inconsistência
-- `async/await` e `fetch` para comunicação entre front e back
-- Deploy separado de front-end (estático) e back-end (servidor Node) em serviços diferentes
 
 ## 👤 Autor
 
